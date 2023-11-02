@@ -2,3 +2,13 @@
 //on 11/01/23
 //
 //
+//
+
+#include<iostream>
+#include<fstream>
+#include<cstring>
+
+struct pet
+{
+	
+};
