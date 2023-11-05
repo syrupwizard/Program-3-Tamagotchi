@@ -1,1 +1,4 @@
-ivy|Scratch|FRISKY|asleep|0
+nora|meow|floofy|0
+Colette|Eat|Fat|0
+Ivy|Run|Speedy|0
+Moncher|Big boi|He's eating most of the time|100

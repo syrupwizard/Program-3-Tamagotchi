@@ -28,12 +28,12 @@ void welcome();
 void petList(pet &aPet, pet pList[P_LIST], int &pListSize);
 //PROTOTYPES to run menu
 void displayMenu();
-void userChoice();
-void runMenu();
+void userChoice(int &userNum);
+void runMenu(pet &aPet, pet pList[P_LIST], int &pListSize, int &userChoice);
 //PROTOTYPES in menu
-void addPet(pet &aPet, pet pList[P_LIST], int &pListSiz);
+void addPet(pet &aPet, pet pList[P_LIST], int &pListSize);
 void interactPet();
-void displayPet();
+void displayPet(pet pList[], int pListSize);
 void displayBy();
 void savePets(pet &aPet, pet pList[P_LIST], int &pListSize);
 void loadPets(pet &aPet, pet pList[P_LIST], int &pListSize);
@@ -44,13 +44,11 @@ int main()
 	pet aPet; // an object of struct pet
 	pet pList[P_LIST];			
 	int pListSize = 0;;
+	int userNum = 0;
 	welcome();
-	addPet(aPet,pList,pListSize);
 	
-
-	cout << pList[0].pName << endl;
-	cout << pList[0].pAbility << endl;
-	savePets(aPet, pList, pListSize);
+	while(userNum != 7)
+		runMenu(aPet, pList, pListSize, userNum);
 	return 0;
 }
 
@@ -60,7 +58,8 @@ int main()
 //It takes no input and displays text
 void welcome()
 {
-
+	cout << "Welcome. This program will allow you to create, care for, and store your virtual pets!" << endl;
+	cout << "Please guard your heart closely, for these pets will steal it!" << endl;	
 }
 //This function is called to manage the array of pets, pList, as well as track the size
 //of the array(20) and ensure array is not over cap.
@@ -82,14 +81,33 @@ void petList(pet &aPet, pet pList[P_LIST], int &pListSize)
 //prints text to user
 void displayMenu()
 {
+	cout << endl << endl << "Menu - enter number 1-7 to proceed:" << endl;
+	cout << "1.	Enter a new pet" << endl;
+	cout << "2.	Play with or care for pet" << endl;
+	cout << "3.	Display all pets" << endl;
+	cout << "4.	Display pets by ability" << endl;
+	cout << "5.	Save existing pets to file (append)" << endl;
+	cout << "6.	Load from existing file" << endl;
+	cout << "7.	Quit" << endl;
 
 }
 
 //This function takes userChoice in the form of an integer and sends it to runMenu()
 //to select the appropriate menu option. Takes only valid menu options (1-7);
 //takes integer and returns it to runMenu()
-void userChoice()
+void userChoice(int &userChoice)
 {
+	cout << "Choose: ";
+	cin >> userChoice;
+	cin.ignore(100,'\n');
+
+	while(userChoice < 1 || userChoice > 7)
+	{
+		cout << "Error! Please enter a number between 1 and 7!" << endl;
+		cout << "Choose: ";
+		cin >> userChoice;
+		cin.ignore(100, '\n');
+	}
 
 }
 //This function is the backbone of the user's interaction with this program
@@ -104,9 +122,35 @@ void userChoice()
 //input includes int choice from userChoice and various other flags to keep things running
 //smoothly
 //no direct output
-void runMenu()
+void runMenu(pet &aPet, pet pList[P_LIST], int &pListSize, int &userNum)
 {
-
+	displayMenu();
+	userChoice(userNum);
+	switch(userNum)
+	{
+		case 1:
+			addPet(aPet, pList, pListSize);
+			break;
+		case 2:
+			//interactPet();
+			break;
+		case 3:
+			displayPet(pList, pListSize);
+			break;
+		case 4:
+			//displayBy();
+			break;
+		case 5:
+			savePets(aPet, pList, pListSize);
+			break;
+		case 6:
+			loadPets(aPet, pList, pListSize);
+			break;
+		case 7:
+			cout << endl;
+			cout << "Come back soon!" << endl;
+			return;
+	}
 }
 
 //IN MENU
@@ -115,6 +159,7 @@ void runMenu()
 //with the given input
 //takes string inputs and outputs members of struct by reference
 void addPet(pet &aPet, pet pList[P_LIST], int &pListSize)
+
 {
 	/*
 	char pName[P_NAME];
@@ -134,10 +179,10 @@ void addPet(pet &aPet, pet pList[P_LIST], int &pListSize)
 	cout <<  "Describe your pet: ";
 	cin.get(aPet.pDesc, P_DESC, '\n');
 	cin.ignore(100, '\n');
-
-	cout << "pet state test";
-	cin.get(aPet.pState, P_STATE, '\n');
-	cin.ignore(100, '\n');
+	
+	cout << "Weight of pet: ";
+	cin >> aPet.pSize;
+	cin.ignore(100,'\n');
 
 	//Add this pet to pList
 	petList(aPet, pList, pListSize);
@@ -147,9 +192,17 @@ void interactPet()
 {
 
 }
-void displayPet()
+void displayPet(pet pList[], int pListSize)
 {
-
+	for(int i = 0; i < pListSize; ++i)
+	{
+		cout << "\n Pet #" << i << endl;
+		cout << '\t' << pList[i].pName << endl;
+		cout << '\t' << pList[i].pAbility << endl;
+		cout << '\t' << pList[i].pDesc << endl;
+		cout << '\t' << pList[i].pSize << endl;
+		
+	}
 }
 void displayBy()
 {
@@ -164,14 +217,18 @@ void savePets(pet &aPet, pet pList[P_LIST], int &pListSize)
 	ofstream outfile;
 	outfile.open("virtual_pet.txt");
 
-	if(outfile)
+	if(!outfile)
 		{
-			cout << "File opened " << endl;
+			cout << "Error when opening file! Save cannot proceed." << endl;
+		}
+	else{
+			cout << "Save in progress..." << endl;
+			cout << "Save complete!" << endl;
+
+						
 			for(int i = 0; i < pListSize;++i)
 			{
-				cout << "write [i]"
-					 << endl;
-				outfile << pList[i].pName << '|' << pList[i].pAbility << '|' << pList[i].pDesc << '|' << pList[i].pState << '|'
+				outfile << pList[i].pName << '|' << pList[i].pAbility << '|' << pList[i].pDesc << '|'
 					<< pList[i].pSize << '\n';
 			}
 		}
@@ -189,10 +246,31 @@ void loadPets(pet &aPet, pet pList[P_LIST], int &pListSize)
 	ifstream infile;
 	infile.open("virtual_pet.txt");
 
-	if(infile)
+	if(!infile)
 	{
-		infile.get();
+		cout << "Error when loading from file! Load cannot proceed." << endl;
+	}
+	else
+	{
+		pListSize = 0;
+		infile.get(pList[pListSize].pName, P_LIST, '|');
 		infile.ignore(100,'|');
+		
+		while(!infile.eof() && pListSize < P_LIST)
+		{
+			infile.get(pList[pListSize].pAbility, P_ABILITY, '|');
+			infile.ignore(100,'|');
+			
+			infile.get(pList[pListSize].pDesc, P_DESC, '|');
+			infile.ignore(100,'|');
+			
+			infile >> pList[pListSize].pSize;
+			infile.ignore(100,'\n');
+			pListSize++;
+
+			infile.get(pList[pListSize].pName, P_LIST, '|');
+			infile.ignore(100,'|');
+		}
 	}
 
 
