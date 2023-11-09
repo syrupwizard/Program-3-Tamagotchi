@@ -1,4 +1,4 @@
-nora|meow|floofy|0
-Colette|Eat|Fat|0
-Ivy|Run|Speedy|0
-Moncher|Big boi|He's eating most of the time|100
+dog|run|fast|10
+nora|run fast|Floofy ball|7
+Colette|sit there|Fat floof|13
+Ivy|fast as fuck|fast|3
